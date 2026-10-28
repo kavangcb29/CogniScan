@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container" style="max-width: 900px;">
+    <div class="text-center mb-5">
+        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 mb-2">
+            <i class="fas fa-graduation-cap me-1"></i>Academic Capstone Research
+        </span>
+        <h2 class="fw-bold text-white">About the CogniScan Platform</h2>
+        <p class="text-muted">Deep learning diagnostic platform focused primarily on Alzheimer's Disease &amp; Cognitive Decline Staging.</p>
+    </div>
+
+    <div class="glass-card mb-4" style="border-top: 3px solid #f59e0b;">
+        <h4 class="fw-bold text-white mb-3"><i class="fas fa-bullseye me-2 text-warning"></i>Project Mission: The Alzheimer's Motive</h4>
+        <p class="text-muted" style="line-height: 1.8;">
+            <strong class="text-white">Alzheimer's disease detection represents the core research motive of this capstone project.</strong> Progressive neurodegenerative diseases inflict irreversible damage to cerebral tissue if not diagnosed in their early transitional phases. Conventional clinical memory tests frequently identify dementia only after extensive cortical degradation has occurred.
+        </p>
+        <p class="text-muted" style="line-height: 1.8;">
+            This system establishes an automated, objective computer vision pipeline capable of detecting subtle biomarkers—specifically hippocampal volume loss and ventricular enlargement—across 4 distinct stages: <span class="text-success fw-semibold">Non-Demented</span>, <span class="text-info fw-semibold">Very Mild Impairment</span>, <span class="text-warning fw-semibold">Mild Dementia</span>, and <span class="text-danger fw-semibold">Moderate Dementia</span>.
+        </p>
+
+        <div class="row g-4 mt-2">
+            <div class="col-md-7">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(245, 158, 11, 0.4);">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h5 class="fw-bold text-warning mb-0"><i class="fas fa-star text-warning me-1"></i>Primary Focus: Alzheimer Staging</h5>
+                        <span class="badge bg-warning text-dark fw-bold">CORE MODEL</span>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">
+                        EfficientNetB0 deep transfer learning architecture achieving 95.8% multi-class accuracy and 82.5% dementia sensitivity on holdout test datasets.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); opacity: 0.85;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h6 class="fw-bold text-muted mb-0"><i class="fas fa-dna me-1 text-info"></i>Auxiliary: Tumor Screener</h6>
+                        <span class="badge bg-secondary">SECONDARY</span>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">
+                        Complementary 4-class CNN (Glioma, Meningioma, Pituitary, Normal) retained for auxiliary multi-modal screening.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <h4 class="fw-bold text-white mb-3"><i class="fas fa-users-gear me-2 text-info"></i>Development &amp; Authorship</h4>
+        <p class="text-muted mb-3">
+            Developed as a Final Year Computer Science &amp; Engineering Capstone Project:
+        </p>
+        <ul class="text-muted mb-0" style="line-height: 1.8;">
+            <li><strong class="text-white">Lead Developer:</strong> Kavan Sudev &amp; Project Team</li>
+            <li><strong class="text-white">Department:</strong> Department of Computer Science &amp; Engineering</li>
+            <li><strong class="text-white">Primary Core Focus:</strong> Early-Stage Alzheimer's MRI Staging &amp; Cognitive Decline Tracking</li>
+            <li><strong class="text-white">Auxiliary Capability:</strong> General Intracranial Tumor Screening</li>
+            <li><strong class="text-white">Core Backends:</strong> Python, TensorFlow / Keras (EfficientNetB0), Django, Flask, OpenCV</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container" style="max-width: 1000px;">
+    <!-- Page Header -->
+    <div class="text-center mb-5">
+        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 mb-2">
+            <i class="fas fa-microscope me-1"></i>Clinical Staging &amp; Pathology Reference
+        </span>
+        <h2 class="fw-bold text-white">Neuroimaging Diagnostic Specifications</h2>
+        <p class="text-muted">Primary focus on Alzheimer's 4-stage dementia spectrum, with auxiliary brain tumor references.</p>
+    </div>
+
+    <!-- PRIMARY SECTION: Alzheimer's Disease 4-Stage Specifications -->
+    <div class="glass-card mb-5" style="border-top: 4px solid #f59e0b; background: rgba(17, 24, 39, 0.9);">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+            <div>
+                <span class="badge bg-warning text-dark fw-bold mb-1">PRIMARY RESEARCH MOTIVE</span>
+                <h3 class="fw-bold text-white mb-0"><i class="fas fa-brain text-warning me-2"></i>Alzheimer's Disease: 4 Clinical Stages</h3>
+            </div>
+            <span class="badge bg-dark border border-warning text-warning fs-6 px-3 py-2">
+                EfficientNetB0 Architecture (95.8%)
+            </span>
+        </div>
+
+        <div class="row g-4">
+            <!-- Stage 1 -->
+            <div class="col-md-6">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(34, 197, 94, 0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="fw-bold text-white mb-0">1. Non-Demented (Control)</h5>
+                        <span class="badge bg-success bg-opacity-25 text-success border border-success">Normal Control</span>
+                    </div>
+                    <p class="text-muted small mb-2"><strong>Radiological Correlate:</strong> Preserved medial temporal lobe volume, intact hippocampus, and normal ventricle size.</p>
+                    <p class="text-muted small mb-0"><strong>Clinical Plan:</strong> Routine annual screening. No therapeutic intervention required.</p>
+                </div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="col-md-6">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(14, 165, 233, 0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="fw-bold text-white mb-0">2. Very Mild Impairment (MCI)</h5>
+                        <span class="badge bg-info bg-opacity-25 text-info border border-info">Critical Early Window</span>
+                    </div>
+                    <p class="text-muted small mb-2"><strong>Radiological Correlate:</strong> Incipient entorhinal cortex thinning and subtle hippocampal shrinkage on high-resolution T1 MRI.</p>
+                    <p class="text-muted small mb-0"><strong>Clinical Plan:</strong> Neuropsychological baseline testing, lifestyle modification, and cognitive stimulation.</p>
+                </div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="col-md-6">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(234, 179, 8, 0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="fw-bold text-white mb-0">3. Mild Dementia</h5>
+                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning">Symptomatic</span>
+                    </div>
+                    <p class="text-muted small mb-2"><strong>Radiological Correlate:</strong> Noticeable ventricular dilation (hydrocephalus ex vacuo) and diffuse temporal-parietal cortical thinning.</p>
+                    <p class="text-muted small mb-0"><strong>Clinical Plan:</strong> Cholinesterase inhibitors (e.g. Donepezil), caregiver assistance, and structured daily routines.</p>
+                </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="col-md-6">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(239, 68, 68, 0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="fw-bold text-white mb-0">4. Moderate Dementia</h5>
+                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger">Advanced Stage</span>
+                    </div>
+                    <p class="text-muted small mb-2"><strong>Radiological Correlate:</strong> Extensive widespread cerebral atrophy, severely enlarged lateral ventricles, and sulcal widening.</p>
+                    <p class="text-muted small mb-0"><strong>Clinical Plan:</strong> Specialized memory care, supportive therapy, and full assisted daily care.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'Alzhimers' %}" class="btn btn-warning px-4 py-2 fw-bold text-dark shadow-sm">
+                <i class="fas fa-brain me-2"></i>Analyze Alzheimer's MRI Scan (Primary)
+            </a>
+        </div>
+    </div>
+
+    <!-- SECONDARY SECTION: Auxiliary Brain Tumor Screener -->
+    <div class="glass-card mb-4" style="border: 1px solid var(--border-subtle); opacity: 0.85;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <span class="badge bg-secondary mb-1">AUXILIARY MODALITY</span>
+                <h4 class="fw-bold text-white mb-0"><i class="fas fa-dna me-2 text-info"></i>Secondary: Brain Tumor 4-Class Specifications</h4>
+            </div>
+            <a href="{% url 'brain' %}" class="btn btn-outline-info btn-sm">
+                <i class="fas fa-arrow-right me-1"></i>Open Screener
+            </a>
+        </div>
+
+        <div class="row g-3">
+            {% for key, info in tumor_types.items %}
+            <div class="col-md-6">
+                <div class="p-3 rounded" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle);">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-white">{{ info.name }}</strong>
+                        <span class="badge bg-dark border border-secondary text-muted small">{{ info.grade|default:"N/A" }}</span>
+                    </div>
+                    <p class="text-muted small mb-1"><strong>Symptoms:</strong> {{ info.symptoms|truncatechars:100 }}</p>
+                    <p class="text-muted small mb-0"><strong>Treatment:</strong> {{ info.treatment|truncatechars:100 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

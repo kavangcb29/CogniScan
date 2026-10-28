@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container" style="max-width: 480px; padding-top: 3rem; padding-bottom: 3rem;">
+    <div class="glass-card">
+        <div class="text-center mb-4">
+            <div class="brand-icon mx-auto mb-3" style="width: 48px; height: 48px; font-size: 1.5rem;">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h3 class="fw-bold text-white mb-1">Administrative Access</h3>
+            <p class="text-muted small">Sign in to view patient diagnostic records and system logs.</p>
+        </div>
+
+        <form action="{% url 'Admin_login' %}" method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="Username" class="form-label">Administrator Username</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-muted"><i class="fas fa-user"></i></span>
+                    <input type="text" class="form-control" id="Username" name="Username" placeholder="Enter username" required autofocus>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-muted"><i class="fas fa-lock"></i></span>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+                </div>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary py-2 fw-semibold" style="background: linear-gradient(135deg, var(--cyan-accent), var(--indigo-accent)); border: none;">
+                    <i class="fas fa-right-to-bracket me-2"></i>Sign In to Admin Portal
+                </button>
+            </div>
+
+            <div class="text-center">
+                <a href="{% url 'home' %}" class="text-muted small text-decoration-none">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Home
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

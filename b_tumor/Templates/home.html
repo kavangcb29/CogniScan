@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <!-- Hero Header - Alzheimer's Highlight -->
+    <div class="text-center py-4 mb-4">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill border border-warning border-opacity-50 bg-warning bg-opacity-10 text-warning mb-3 fs-6">
+            <span class="spinner-grow spinner-grow-sm text-warning" role="status"></span>
+            <strong>Primary Capstone Focus:</strong> Early-Stage Alzheimer's &amp; Dementia Staging
+        </div>
+        <h1 class="display-4 fw-bold text-white mb-3">AI-Powered Alzheimer's Disease &amp; Dementia Diagnostic Suite</h1>
+        <p class="lead text-muted mx-auto" style="max-width: 800px;">
+            The primary key motive of this research project is automated, objective detection of progressive neurodegenerative cognitive decline — tracking hippocampal volume loss, cortical thinning, and multi-stage Alzheimer's classification from brain MRI scans.
+        </p>
+        
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{% url 'Alzhimers' %}" class="btn btn-warning px-4 py-3 fw-bold text-dark shadow" style="background: linear-gradient(135deg, #f59e0b, #eab308); border: none; font-size: 1.1rem; border-radius: 10px;">
+                <i class="fas fa-brain me-2"></i>Analyze Alzheimer's MRI Scan (Primary)
+            </a>
+            <a href="{% url 'brain_info' %}" class="btn btn-outline-light px-4 py-3 fw-semibold" style="border-radius: 10px;">
+                <i class="fas fa-microscope me-2"></i>View Staging Metrics
+            </a>
+        </div>
+    </div>
+
+    <!-- Primary Showcase: 4-Stage Alzheimer's Classifier -->
+    <div class="glass-card mb-5" style="border-top: 4px solid #f59e0b; background: rgba(17, 24, 39, 0.9);">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+            <div>
+                <span class="badge bg-warning text-dark px-3 py-1 fw-bold text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 0.05em;">
+                    Core Research Objective
+                </span>
+                <h2 class="fw-bold text-white mb-1">4-Stage Alzheimer's Neuroimaging Classifier</h2>
+                <p class="text-muted mb-0">Powered by EfficientNetB0 Transfer Learning trained and validated on verified clinical cognitive datasets.</p>
+            </div>
+            <div class="text-md-end">
+                <span class="badge bg-dark border border-warning text-warning fs-6 px-3 py-2">
+                    <i class="fas fa-bullseye me-1"></i>95.8% Benchmark Accuracy
+                </span>
+                <div class="small text-muted mt-1">82.5% Holdout Dementia Sensitivity</div>
+            </div>
+        </div>
+
+        <h5 class="fw-bold text-white mb-3">Diagnostic Staging Spectrum:</h5>
+        <div class="row g-3 mb-4">
+            <!-- NonDemented -->
+            <div class="col-md-3 col-sm-6">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(34, 197, 94, 0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-success bg-opacity-25 text-success border border-success">Stage 1</span>
+                        <i class="fas fa-check-circle text-success"></i>
+                    </div>
+                    <h6 class="fw-bold text-white mb-1">Non-Demented</h6>
+                    <p class="text-muted small mb-0">Normal baseline brain parenchyma with preserved cortical volume and standard ventricles.</p>
+                </div>
+            </div>
+
+            <!-- Very Mild -->
+            <div class="col-md-3 col-sm-6">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(14, 165, 233, 0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-info bg-opacity-25 text-info border border-info">Stage 2</span>
+                        <i class="fas fa-hourglass-start text-info"></i>
+                    </div>
+                    <h6 class="fw-bold text-white mb-1">Very Mild Impairment</h6>
+                    <p class="text-muted small mb-0">Early MCI transition window. Critical early stage where therapeutic intervention slows progression.</p>
+                </div>
+            </div>
+
+            <!-- Mild -->
+            <div class="col-md-3 col-sm-6">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(234, 179, 8, 0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning">Stage 3</span>
+                        <i class="fas fa-triangle-exclamation text-warning"></i>
+                    </div>
+                    <h6 class="fw-bold text-white mb-1">Mild Dementia</h6>
+                    <p class="text-muted small mb-0">Observable memory decline, progressive temporal atrophy, and mild ventricular expansion.</p>
+                </div>
+            </div>
+
+            <!-- Moderate -->
+            <div class="col-md-3 col-sm-6">
+                <div class="p-3 rounded h-100" style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(239, 68, 68, 0.3);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-danger bg-opacity-25 text-danger border border-danger">Stage 4</span>
+                        <i class="fas fa-circle-exclamation text-danger"></i>
+                    </div>
+                    <h6 class="fw-bold text-white mb-1">Moderate Dementia</h6>
+                    <p class="text-muted small mb-0">Severe diffuse cortical thinning, pronounced ventricular enlargement, and extensive tissue atrophy.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center p-3 rounded" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle);">
+            <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-brain fa-2x text-warning"></i>
+                <div>
+                    <strong class="text-white">Ready to evaluate a cognitive MRI scan?</strong>
+                    <div class="text-muted small">Input any coronal or axial T1/T2 slice to compute calibrated stage probabilities.</div>
+                </div>
+            </div>
+            <a href="{% url 'Alzhimers' %}" class="btn btn-warning btn-sm fw-bold text-dark mt-2 mt-md-0 px-3 py-2">
+                Launch Alzheimer Classifier <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Side-Tracked / Secondary Auxiliary Section: Brain Tumor Detection -->
+    <div class="glass-card mb-5" style="border: 1px solid var(--border-subtle); background: rgba(15, 23, 42, 0.5); opacity: 0.9;">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-secondary text-light px-2 py-1" style="font-size: 0.7rem;">AUXILIARY MODULE</span>
+                    <h5 class="fw-bold text-white mb-0"><i class="fas fa-dna me-2 text-info"></i>Secondary Tool: 4-Class Brain Tumor Screener</h5>
+                </div>
+                <p class="text-muted small mb-0" style="max-width: 750px;">
+                    While Alzheimer's disease staging is the primary motive and focus of this research, the suite also retains a secondary 4-class Brain Tumor CNN classifier (Glioma, Meningioma, Pituitary Adenoma, No Tumor) for general emergency radiological triage.
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'brain' %}" class="btn btn-outline-info btn-sm text-nowrap px-3 py-2">
+                    <i class="fas fa-upload me-1"></i>Open Secondary Tumor Tool
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Architecture & Verification Metrics -->
+    <div class="glass-card mb-4">
+        <h5 class="fw-bold text-white mb-3"><i class="fas fa-server me-2 text-warning"></i>Neural Architectures &amp; Verification Metrics</h5>
+        <div class="table-responsive">
+            <table class="table table-dark table-borderless align-middle mb-0" style="background: transparent;">
+                <thead>
+                    <tr class="text-muted border-bottom border-secondary small text-uppercase">
+                        <th>Pipeline Hierarchy</th>
+                        <th>Model Name</th>
+                        <th>Neural Architecture</th>
+                        <th>Input Shape</th>
+                        <th>Clinical Benchmark</th>
+                        <th>Role in Project</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-left: 3px solid #f59e0b; background: rgba(245, 158, 11, 0.05);">
+                        <td><span class="badge bg-warning text-dark fw-bold">PRIMARY FOCUS</span></td>
+                        <td class="fw-bold text-white">Alzheimer Staging Model</td>
+                        <td class="text-muted">EfficientNetB0 Transfer Learning</td>
+                        <td><code>224 &times; 224 &times; 3</code></td>
+                        <td><span class="text-warning fw-semibold">95.8% Accuracy &bull; 82.5% Sensitivity</span></td>
+                        <td><strong class="text-warning">Main Research Motive</strong></td>
+                    </tr>
+                    <tr style="opacity: 0.75;">
+                        <td><span class="badge bg-secondary">AUXILIARY</span></td>
+                        <td class="fw-semibold text-muted">Brain Tumor Classifier</td>
+                        <td class="text-muted">Sequential Conv2D + MaxPool</td>
+                        <td><code>224 &times; 224 &times; 3</code></td>
+                        <td class="text-muted">97.5% Benchmark</td>
+                        <td><span class="text-muted">Secondary Screener</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

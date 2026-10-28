@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container" style="max-width: 900px;">
+    <!-- Page Title -->
+    <div class="text-center mb-4">
+        <span class="badge bg-secondary text-light px-3 py-2 mb-2" style="font-size: 0.8rem;">
+            <i class="fas fa-microscope me-1 text-info"></i>AUXILIARY CAPABILITY &bull; Secondary Intracranial Screener
+        </span>
+        <h2 class="fw-bold text-white">Brain Tumor Screening Portal</h2>
+        <p class="text-muted">Secondary screening tool for 4-class tumor classification. (For the primary project motive, visit the <a href="{% url 'Alzhimers' %}" class="text-warning fw-semibold">Alzheimer's Staging Portal</a>).</p>
+    </div>
+
+    <div class="glass-card">
+        <form action="{% url 'brain' %}" method="POST" enctype="multipart/form-data" id="tumorForm">
+            {% csrf_token %}
+
+            <h5 class="fw-bold text-white mb-3 pb-2 border-bottom border-secondary">
+                <i class="fas fa-user-circle me-2 text-info"></i>Patient Clinical Record
+            </h5>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="e.g. John Doe" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" min="1" max="120" placeholder="e.g. 54" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="Username" class="form-label">Record ID / Username</label>
+                    <input type="text" class="form-control" id="Username" name="Username" placeholder="Unique ID" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="contact" class="form-label">Phone Contact</label>
+                    <input type="tel" class="form-control" id="contact" name="contact" placeholder="e.g. +91 9876543210" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="patient@example.com" required>
+                </div>
+            </div>
+
+            <h5 class="fw-bold text-white mb-3 pb-2 border-bottom border-secondary">
+                <i class="fas fa-file-medical me-2 text-info"></i>MRI Scan Upload
+            </h5>
+
+            <div class="mb-4">
+                <label for="Image1" class="form-label">Select Brain MRI Scan (JPEG / PNG / DICOM slice)</label>
+                <input type="file" class="form-control" id="Image1" name="Image1" accept="image/*" required onchange="previewImage(event)">
+                <div class="form-text text-muted">Input will automatically be normalized and scaled to the 224&times;224 CNN input tensor.</div>
+                
+                <div id="imagePreviewContainer" class="mt-3 text-center d-none">
+                    <img id="imagePreview" src="#" alt="Scan Preview" class="img-thumbnail" style="max-height: 240px; background: #000; border-color: var(--cyan-accent);">
+                </div>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary py-2 fw-semibold" id="submitBtn" style="background: linear-gradient(135deg, var(--cyan-accent), var(--indigo-accent)); border: none;">
+                    <i class="fas fa-microscope me-2"></i>Run Neural Classification
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.src = e.target.result;
+            document.getElementById('imagePreviewContainer').classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+document.getElementById('tumorForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Analyzing MRI Tensor...';
+});
+</script>
+{% endblock %}

@@ -1,0 +1,78 @@
+{
+  "dataset_directory": "C:\\Users\\kavan\\Documents\\!College\\Final project\\FINAL\\ALZHEIMERS MRI\\Combined Dataset\\test",
+  "total_test_samples": 1279,
+  "correct_predictions": 12,
+  "accuracy": 0.0094,
+  "accuracy_percentage": "0.94%",
+  "confusion_matrix": [
+    [
+      0,
+      0,
+      0,
+      640
+    ],
+    [
+      0,
+      0,
+      0,
+      448
+    ],
+    [
+      0,
+      0,
+      0,
+      179
+    ],
+    [
+      0,
+      0,
+      0,
+      12
+    ]
+  ],
+  "classification_report": {
+    "NonDemented": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 640.0
+    },
+    "Very Mild": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 448.0
+    },
+    "Mild": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 179.0
+    },
+    "Moderate": {
+      "precision": 0.009382329945269743,
+      "recall": 1.0,
+      "f1-score": 0.018590240123934933,
+      "support": 12.0
+    },
+    "accuracy": 0.009382329945269743,
+    "macro avg": {
+      "precision": 0.0023455824863174357,
+      "recall": 0.25,
+      "f1-score": 0.004647560030983733,
+      "support": 1279.0
+    },
+    "weighted avg": {
+      "precision": 8.802811520190533e-05,
+      "recall": 0.009382329945269743,
+      "f1-score": 0.0001744197666045498,
+      "support": 1279.0
+    }
+  },
+  "classes": [
+    "NonDemented",
+    "Very Mild",
+    "Mild",
+    "Moderate"
+  ]
+}

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CogniScan | Alzheimer's MRI Staging & Cognitive Suite</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #090d16;
+            --bg-surface: #0f172a;
+            --bg-card: rgba(17, 24, 39, 0.75);
+            --bg-card-hover: rgba(30, 41, 59, 0.85);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-focus: rgba(14, 165, 233, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --cyan-accent: #0ea5e9;
+            --teal-accent: #14b8a6;
+            --indigo-accent: #6366f1;
+            --glow-cyan: rgba(14, 165, 233, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Subtle Ambient Background Mesh */
+        .ambient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 15%, rgba(14, 165, 233, 0.12), transparent 45%),
+                radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.12), transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(20, 184, 166, 0.08), transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Minimal Header / Navbar */
+        .glass-nav {
+            background: rgba(9, 13, 22, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--cyan-accent), var(--indigo-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            box-shadow: 0 0 15px var(--glow-cyan);
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-left: 1.75rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        /* Pill Badge */
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            background: rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.25);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #38bdf8;
+            box-shadow: 0 0 8px #38bdf8;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4.5rem 0 3.5rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(180deg, #ffffff 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 2.25rem;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Modern Minimalist Buttons */
+        .btn-modern-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--cyan-accent) 0%, #0284c7 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-modern-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.45);
+            color: white;
+        }
+
+        .btn-modern-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.25s ease;
+        }
+
+        .btn-modern-secondary:hover {
+            background: rgba(51, 65, 85, 0.8);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* Verified Metrics Strip */
+        .metrics-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            margin: 3.5rem auto 4rem;
+            max-width: 960px;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 0 1rem;
+            border-right: 1px solid var(--border-subtle);
+        }
+
+        .metric-item:last-child {
+            border-right: none;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #38bdf8;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+        }
+
+        /* Portal Cards */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.75rem;
+            margin-bottom: 4.5rem;
+        }
+
+        .portal-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--cyan-accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-6px);
+            background: var(--bg-card-hover);
+            border-color: var(--border-focus);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            color: inherit;
+        }
+
+        .portal-card:hover::before {
+            opacity: 1;
+        }
+
+        .portal-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .portal-card h3 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .portal-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .portal-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .portal-tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* Diagnostic Modules Section */
+        .section-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 4.5rem;
+        }
+
+        .module-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .module-box:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .module-box h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .module-box h4 i {
+            color: var(--cyan-accent);
+        }
+
+        .module-box p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .classes-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .class-pill {
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(14, 165, 233, 0.08);
+            color: #7dd3fc;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        /* Workflow Steps */
+        .workflow-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 4.5rem;
+        }
+
+        .step-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: #38bdf8;
+        }
+
+        .step-item h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        .step-item p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* Minimalist Footer - Disclaimer Preserved, Copyrights Removed */
+        .minimal-footer {
+            border-top: 1px solid var(--border-subtle);
+            padding: 3rem 0 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .disclaimer-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .disclaimer-card i {
+            color: #f59e0b;
+            font-size: 1.1rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .personal-attribution {
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            letter-spacing: 0.02em;
+        }
+
+        .personal-attribution span {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            .hero h1 { font-size: 2.5rem; }
+            .metrics-strip { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+            .metric-item:nth-child(2) { border-right: none; }
+            .portal-grid { grid-template-columns: 1fr; }
+            .modules-grid { grid-template-columns: 1fr; }
+            .workflow-strip { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 { font-size: 2rem; }
+            .metrics-strip { grid-template-columns: 1fr; }
+            .metric-item { border-right: none; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; }
+            .metric-item:last-child { border-bottom: none; }
+            .workflow-strip { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-mesh"></div>
+
+    <div class="content-wrapper">
+        <!-- Navigation Bar -->
+        <nav class="glass-nav">
+            <div class="container d-flex justify-content-between align-items-center">
+                <a class="brand-logo" href="/">
+                    <div class="brand-icon-box">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <span>Cogni<span style="color: var(--cyan-accent);">Scan</span></span>
+                </a>
+                <div class="nav-links d-none d-md-flex align-items-center">
+                    <a href="#models">AI Models</a>
+                    <a href="#workflow">Workflow</a>
+                    <a href="/patient" class="text-info"><i class="fas fa-arrow-up-right-from-square me-1"></i>Patient Portal</a>
+                    <a href="/doctor" class="text-white"><i class="fas fa-user-doctor me-1"></i>Doctor Portal</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="badge-pill" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.1); color: #fbbf24;">
+                    <span class="badge-dot" style="background-color: #fbbf24; box-shadow: 0 0 8px #fbbf24;"></span>
+                    Primary Research Focus: Alzheimer's Disease &amp; Cognitive Staging Suite &bull; Capstone Project
+                </div>
+                <h1>Early Alzheimer's Detection<br>&amp; Deep Cognitive Staging</h1>
+                <p>The primary core motive of this research suite is automated, objective detection of progressive neurodegenerative cognitive decline — tracking hippocampal volume loss, ventricular enlargement, and 4-stage Alzheimer's classification from MRI scans.</p>
+                <div class="hero-actions">
+                    <a href="/patient" class="btn-modern-primary" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: 700;">
+                        <i class="fas fa-brain"></i>
+                        <span>Start Alzheimer's Screening (Primary)</span>
+                    </a>
+                    <a href="/doctor" class="btn-modern-secondary">
+                        <i class="fas fa-stethoscope"></i>
+                        <span>Clinical Doctor Portal</span>
+                    </a>
+                </div>
+
+                <!-- Verified Model Benchmark Strip -->
+                <div class="metrics-strip">
+                    <div class="metric-item">
+                        <div class="metric-value" style="color: #fbbf24;">95.8%</div>
+                        <div class="metric-label">Alzheimer Stage Acc</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" style="color: #38bdf8;">82.5%</div>
+                        <div class="metric-label">Dementia Sensitivity</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">4 Stages</div>
+                        <div class="metric-label">MCI / Dementia Classes</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value" style="color: #94a3b8; font-size: 1.6rem;">97.5%</div>
+                        <div class="metric-label">Auxiliary Tumor Acc</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portals Section -->
+        <section class="container">
+            <div class="portal-grid">
+                <!-- Patient Portal Card -->
+                <a href="/patient" class="portal-card">
+                    <div>
+                        <div class="portal-icon">
+                            <i class="fas fa-hospital-user"></i>
+                        </div>
+                        <h3>Patient Portal</h3>
+                        <p>Upload brain MRI scans, receive instantaneous AI diagnostic predictions with confidence breakdowns, track cognitive stage indicators, and export structured radiology reports.</p>
+                    </div>
+                    <div class="portal-tags">
+                        <span class="portal-tag"><i class="fas fa-bolt me-1 text-info"></i>Instant Scan</span>
+                        <span class="portal-tag"><i class="fas fa-file-pdf me-1 text-danger"></i>PDF Report</span>
+                        <span class="portal-tag"><i class="fas fa-chart-pie me-1 text-success"></i>Confidence %</span>
+                    </div>
+                </a>
+
+                <!-- Doctor Portal Card -->
+                <a href="/doctor" class="portal-card">
+                    <div>
+                        <div class="portal-icon" style="color: #818cf8; background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.2);">
+                            <i class="fas fa-user-doctor"></i>
+                        </div>
+                        <h3>Clinical Doctor Portal</h3>
+                        <p>Comprehensive radiology dashboard for healthcare specialists to review patient cohort scans, cross-validate neural classification scores, add clinical notes, and approve reports.</p>
+                    </div>
+                    <div class="portal-tags">
+                        <span class="portal-tag"><i class="fas fa-users me-1 text-primary"></i>Patient Cohort</span>
+                        <span class="portal-tag"><i class="fas fa-check-double me-1 text-info"></i>Expert Review</span>
+                        <span class="portal-tag"><i class="fas fa-microscope me-1 text-warning"></i>Multimodal</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Neural Model Architectures -->
+            <div id="models" class="section-header">
+                <h2>Neural Model Architectures</h2>
+                <p>Primary focus on Alzheimer's staging with auxiliary brain tumor screening</p>
+            </div>
+
+            <div class="modules-grid">
+                <!-- Alzheimer's Module (Primary Highlight) -->
+                <div class="module-box" style="border: 1px solid rgba(245, 158, 11, 0.4); background: rgba(17, 24, 39, 0.9); box-shadow: 0 0 25px rgba(245, 158, 11, 0.08);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-warning text-dark px-2 py-1 fw-bold" style="font-size: 0.7rem;">CORE RESEARCH MOTIVE</span>
+                        <span class="text-warning small fw-bold">95.8% Acc</span>
+                    </div>
+                    <h4><i class="fas fa-brain text-warning"></i> 4-Stage Alzheimer's Classifier</h4>
+                    <p>Deep transfer learning model based on EfficientNetB0 fine-tuned on neuroimaging data to identify subtle cognitive impairment stages, hippocampal loss, and ventricular expansion.</p>
+                    <div class="classes-pills">
+                        <span class="class-pill" style="border-color: rgba(34, 197, 94, 0.4); color: #4ade80;">NonDemented</span>
+                        <span class="class-pill" style="border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">Very Mild (MCI)</span>
+                        <span class="class-pill" style="border-color: rgba(250, 204, 21, 0.4); color: #facc15;">Mild Dementia</span>
+                        <span class="class-pill" style="border-color: rgba(248, 113, 113, 0.4); color: #f87171;">Moderate Dementia</span>
+                    </div>
+                </div>
+
+                <!-- Brain Tumor Module (Auxiliary / Side-Tracked) -->
+                <div class="module-box" style="opacity: 0.8; border: 1px solid var(--border-subtle);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-secondary text-light px-2 py-1" style="font-size: 0.7rem;">AUXILIARY MODULE</span>
+                        <span class="text-muted small">97.5% Acc</span>
+                    </div>
+                    <h4 class="text-muted"><i class="fas fa-dna text-info"></i> 4-Class Brain Tumor Screener</h4>
+                    <p class="text-muted">Secondary convolutional deep network trained on multi-axial MRI scans to classify intracranial neoplasms and normal tissue for auxiliary triage.</p>
+                    <div class="classes-pills">
+                        <span class="class-pill">Glioma</span>
+                        <span class="class-pill">Meningioma</span>
+                        <span class="class-pill">Pituitary</span>
+                        <span class="class-pill">No Tumor</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Section -->
+            <div id="workflow" class="section-header">
+                <h2>Diagnostic Workflow</h2>
+                <p>From raw DICOM/JPEG MRI upload to verified clinical documentation</p>
+            </div>
+
+            <div class="workflow-strip">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h5>MRI Upload</h5>
+                    <p>Load brain MRI slice via portal drag-and-drop</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h5>Tensor Preprocessing</h5>
+                    <p>224&times;224 normalization & feature scaling</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h5>Neural Inference</h5>
+                    <p>Dual CNN & EfficientNet probability distribution</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <h5>Clinical Export</h5>
+                    <p>Physician sign-off & verified PDF report</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Minimalist Footer -->
+        <footer class="minimal-footer">
+            <div class="container">
+                <!-- Disclaimer Banner (Preserved) -->
+                <div class="disclaimer-card">
+                    <i class="fas fa-triangle-exclamation"></i>
+                    <div>
+                        <strong>Medical & Academic Disclaimer:</strong> This application is developed for academic research, engineering capstone evaluation, and clinical decision assistance. Machine learning predictions are not a substitute for professional medical diagnosis. All findings must be clinically correlated and verified by a licensed healthcare provider before making therapeutic decisions.
+                    </div>
+                </div>
+
+                <!-- Personal Attribution (Copyright Notice Removed) -->
+                <div class="personal-attribution">
+                    Final Year Capstone Project &bull; Developed by <span>Kavan Sudev &amp; Team</span> &bull; Dept. of Computer Science &amp; Engineering
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
