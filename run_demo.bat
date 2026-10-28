@@ -9,6 +9,7 @@ echo.
 echo Home Page:    http://localhost:5002/
 echo Patient Page: http://localhost:5002/patient
 echo Doctor Page:  http://localhost:5002/doctor
+echo Records Page: http://localhost:5002/records
 echo.
 echo Press Ctrl+C to stop the server.
 echo =====================================================================
