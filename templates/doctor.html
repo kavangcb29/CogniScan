@@ -858,6 +858,12 @@
                 <i class="fas fa-brain me-2 text-info"></i>CogniScan
             </a>
             <div class="ms-auto">
+                <a href="/" class="btn btn-outline-light btn-sm me-2">
+                    <i class="fas fa-home me-1"></i>Home
+                </a>
+                <a href="/patient" class="btn btn-outline-primary btn-sm me-2">
+                    <i class="fas fa-microscope me-1"></i>Patient Portal
+                </a>
                 <a href="/records" class="btn btn-outline-warning btn-sm me-2">
                     <i class="fas fa-folder-open me-1"></i>All Records
                 </a>
@@ -1838,6 +1844,12 @@
             // Use length constraint to avoid matching base64 strings which can contain '/'
             if (normalizedValue.match(/\.(jpeg|jpg|gif|png|dcm)$/i) || (normalizedValue.includes('/') && normalizedValue.length < 200)) {
                 return '/' + normalizedValue;
+            }
+            if (normalizedValue.startsWith('/9j/')) {
+                return `data:image/jpeg;base64,${normalizedValue}`;
+            }
+            if (normalizedValue.startsWith('iVBOR')) {
+                return `data:image/png;base64,${normalizedValue}`;
             }
             return `data:image/png;base64,${normalizedValue}`;
         }

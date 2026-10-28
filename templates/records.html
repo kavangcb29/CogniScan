@@ -534,9 +534,7 @@
                             {% for r in reports %}
                                 {% set is_alz = (r.type == 'alz' or r.alzheimer_stage or 'alz' in (r.type|lower)) %}
                                 {% set is_approved = (r.status == 'approved' or r.status == 'completed') %}
-                                {% set img_src = r.input_image or r.image or r.original_image or '' %}
-                                {% set img_display = ('data:image/png;base64,' ~ img_src) if (img_src and not img_src.startswith('http') and not img_src.startswith('/') and not img_src.startswith('data:')) else (img_src if img_src else '/static/images/placeholder_scan.png') %}
-
+                                {% set thumb = r.thumbnail_url or '/static/images/placeholder_scan.png' %}
                                 <div class="record-card report-item-row" 
                                      data-id="{{ r.id }}"
                                      data-patient="{{ r.patient_name or 'Anonymous Patient' }}"
@@ -548,8 +546,9 @@
                                         
                                         <!-- Left: Image & Demographics -->
                                         <div class="d-flex align-items-center gap-3">
-                                            <img src="{{ img_display }}" alt="Scan thumbnail" class="record-thumbnail" 
-                                                 onclick="openImageModal('{{ img_display }}', '{{ r.patient_name or 'Patient' }} - Scan #{{ r.id }}')">
+                                            <img src="{{ thumb }}" alt="Scan thumbnail" class="record-thumbnail" 
+                                                 onerror="this.src='/static/images/placeholder_scan.png'"
+                                                 onclick="openImageModal(this.src, '{{ r.patient_name or "Patient" }} - Scan #{{ r.id }}')">
                                             <div>
                                                 <div class="d-flex align-items-center gap-2 mb-1">
                                                     <span class="mono fw-bold text-white" style="font-size: 1.05rem;">
@@ -667,11 +666,9 @@
                 <div class="tab-pane fade" id="tab-gallery" role="tabpanel">
                     <div class="gallery-grid">
                         {% for r in reports %}
-                            {% set img_src = r.input_image or r.image or r.original_image or '' %}
-                            {% set img_display = ('data:image/png;base64,' ~ img_src) if (img_src and not img_src.startswith('http') and not img_src.startswith('/') and not img_src.startswith('data:')) else (img_src if img_src else '/static/images/placeholder_scan.png') %}
-                            
+                            {% set thumb = r.thumbnail_url or '/static/images/placeholder_scan.png' %}
                             <div class="gallery-item">
-                                <img src="{{ img_display }}" alt="MRI Scan" onclick="openImageModal('{{ img_display }}', '{{ r.patient_name or 'Patient' }} - Scan #{{ r.id }}')">
+                                <img src="{{ thumb }}" alt="MRI Scan" onerror="this.src='/static/images/placeholder_scan.png'" onclick="openImageModal(this.src, '{{ r.patient_name or "Patient" }} - Scan #{{ r.id }}')">
                                 <div class="gallery-item-body">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <strong class="text-white small">Scan #{{ r.id }}</strong>
@@ -746,7 +743,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center p-4">
-                    <img id="modalPreviewImg" src="" alt="Full Resolution MRI" style="max-height: 520px; max-width: 100%; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+                    <img id="modalPreviewImg" src="" alt="Full Resolution MRI" onerror="this.src='/static/images/placeholder_scan.png'" style="max-height: 520px; max-width: 100%; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
                 </div>
                 <div class="modal-footer modal-footer-custom justify-content-between">
                     <span class="mono text-muted small">CogniScan High-Resolution Neuroimaging Viewer</span>
@@ -838,14 +835,46 @@
             const r = ALL_REPORTS.find(item => item.id === reportId);
             if (!r) return;
 
-            document.getElementById('detailsModalTitle').innerHTML = `<i class="fas fa-microscope text-warning me-2"></i>Case #${r.id} &bull; ${r.patient_name || 'Patient'}`;
+            document.getElementById('detailsModalTitle').innerHTML = `<i class="fas fa-microscope text-warning me-2"></i>Case #${r.id} &bull; ${escapeHtml(r.patient_name || 'Patient')}`;
             document.getElementById('detailsPreviewBtn').href = `/report-preview/${r.id}`;
             document.getElementById('detailsPdfBtn').href = `/generate-report/${r.id}`;
 
             const isAlz = r.type === 'alz' || r.alzheimer_stage;
             const body = document.getElementById('detailsModalBody');
             
+            const thumbImg = r.thumbnail_url || '/static/images/placeholder_scan.png';
+            const enhImg = r.enhanced_url;
+            const bndImg = r.boundary_url;
+            const mskImg = r.mask_url;
+
             body.innerHTML = `
+                <div class="mb-3 p-3 rounded-3" style="background: rgba(0,0,0,0.25); border: 1px solid var(--border-subtle);">
+                    <div class="small text-muted text-uppercase mono mb-2"><i class="fas fa-images me-1 text-info"></i>Diagnostic Modalities &amp; Segmentation</div>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-3 text-center">
+                            <div class="small text-muted mono mb-1" style="font-size: 0.72rem;">Original MRI</div>
+                            <img src="${thumbImg}" onerror="this.src='/static/images/placeholder_scan.png'" class="img-fluid rounded border border-secondary" style="height: 90px; width: 100%; object-fit: cover; cursor: pointer;" onclick="openImageModal(this.src, 'Original Scan - Case #${r.id}')">
+                        </div>
+                        ${enhImg && enhImg !== '/static/images/placeholder_scan.png' ? `
+                            <div class="col-6 col-md-3 text-center">
+                                <div class="small text-muted mono mb-1" style="font-size: 0.72rem;">Enhanced MRI</div>
+                                <img src="${enhImg}" onerror="this.src='/static/images/placeholder_scan.png'" class="img-fluid rounded border border-secondary" style="height: 90px; width: 100%; object-fit: cover; cursor: pointer;" onclick="openImageModal(this.src, 'Enhanced Scan - Case #${r.id}')">
+                            </div>
+                        ` : ''}
+                        ${bndImg && bndImg !== '/static/images/placeholder_scan.png' ? `
+                            <div class="col-6 col-md-3 text-center">
+                                <div class="small text-muted mono mb-1" style="font-size: 0.72rem;">Boundary / Contour</div>
+                                <img src="${bndImg}" onerror="this.src='/static/images/placeholder_scan.png'" class="img-fluid rounded border border-secondary" style="height: 90px; width: 100%; object-fit: cover; cursor: pointer;" onclick="openImageModal(this.src, 'Boundary Overlay - Case #${r.id}')">
+                            </div>
+                        ` : ''}
+                        ${mskImg && mskImg !== '/static/images/placeholder_scan.png' ? `
+                            <div class="col-6 col-md-3 text-center">
+                                <div class="small text-muted mono mb-1" style="font-size: 0.72rem;">Segmentation Mask</div>
+                                <img src="${mskImg}" onerror="this.src='/static/images/placeholder_scan.png'" class="img-fluid rounded border border-secondary" style="height: 90px; width: 100%; object-fit: cover; cursor: pointer;" onclick="openImageModal(this.src, 'Binary Mask - Case #${r.id}')">
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle);">

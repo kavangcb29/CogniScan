@@ -1235,12 +1235,52 @@ def doctor_portal():
     return render_template('doctor.html')
 
 
+def resolve_image_display(val):
+    if not val or not isinstance(val, str):
+        return '/static/images/placeholder_scan.png'
+    val = val.strip()
+    if not val:
+        return '/static/images/placeholder_scan.png'
+    if val.startswith('data:image'):
+        return val
+    if val.startswith(('http://', 'https://')):
+        return val
+    if val.startswith(('/static/', '/test_samples/', '/uploads/')):
+        return val
+    if val.startswith('uploads/'):
+        return '/' + val
+    if val.startswith('test_samples/'):
+        return '/' + val
+    if val.startswith('static/'):
+        return '/' + val
+    if len(val) < 260 and (val.endswith(('.jpg', '.jpeg', '.png', '.webp')) or os.path.exists(val)):
+        if 'uploads' in val:
+            idx = val.replace('\\', '/').find('uploads/')
+            return '/' + val.replace('\\', '/')[idx:]
+        elif 'test_samples' in val:
+            idx = val.replace('\\', '/').find('test_samples/')
+            return '/' + val.replace('\\', '/')[idx:]
+    if val.startswith('/9j/'):
+        return f'data:image/jpeg;base64,{val}'
+    elif val.startswith('iVBOR'):
+        return f'data:image/png;base64,{val}'
+    elif len(val) > 100:
+        return f'data:image/jpeg;base64,{val}'
+    return '/static/images/placeholder_scan.png'
+
 @app.route('/records')
 def records_portal():
     raw_reports = load_reports()
     reports = list(reversed(raw_reports)) if raw_reports else []
     patient_details = load_patient_details()
     users = load_users()
+
+    # Pre-resolve all thumbnail and multi-modal image sources
+    for r in reports:
+        r['thumbnail_url'] = resolve_image_display(r.get('input_image') or r.get('image') or r.get('original_image'))
+        r['enhanced_url'] = resolve_image_display(r.get('enhanced_image'))
+        r['boundary_url'] = resolve_image_display(r.get('boundary_image') or r.get('segmentation_overlay'))
+        r['mask_url'] = resolve_image_display(r.get('mask_image') or r.get('segmentation_mask'))
 
     # Calculate summary statistics
     total_reports = len(reports)
@@ -1261,14 +1301,18 @@ def records_portal():
         'approved_count': approved_count
     }
 
-    # Lightweight metadata for client-side search, filtering, and details modal
+    # Clean client-side metadata for search, filtering, and modal inspection
     reports_meta = []
     for r in reports:
         item = {}
         for k, v in r.items():
-            if isinstance(v, str) and len(v) > 1000:
+            if isinstance(v, str) and len(v) > 2000 and not k.endswith('_url'):
                 continue
             item[k] = v
+        item['thumbnail_url'] = r.get('thumbnail_url')
+        item['enhanced_url'] = r.get('enhanced_url')
+        item['boundary_url'] = r.get('boundary_url')
+        item['mask_url'] = r.get('mask_url')
         reports_meta.append(item)
 
     return render_template('records.html', reports=reports, reports_meta=reports_meta, patient_details=patient_details, users=users, stats=stats)
