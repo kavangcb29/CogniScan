@@ -1,0 +1,35 @@
+Flask==2.2.5
+Flask-CORS
+Flask-SocketIO
+gunicorn
+numpy<1.24
+opencv-python-headless
+pillow
+pydicom
+python-dotenv
+pytest
+scikit-learn
+simple-websocket
+reportlab
+tensorflow==2.15.0
+Werkzeug==2.2.3
+flask==2.2.5
+flask-socketio==5.3.6
+werkzeug==2.2.3
+eventlet==0.33.3
+pandas
+seaborn
+matplotlib
+imbalanced-learn
+tqdm
+
+# Django dependencies
+Django==3.2.16
+django-cors-headers
+djangorestframework
+django-filter
+
+# Additional ML/AI dependencies
+efficientnet
+keras
+h5py
