@@ -1235,6 +1235,47 @@ def doctor_portal():
     return render_template('doctor.html')
 
 
+@app.route('/records')
+def records_portal():
+    raw_reports = load_reports()
+    reports = list(reversed(raw_reports)) if raw_reports else []
+    patient_details = load_patient_details()
+    users = load_users()
+
+    # Calculate summary statistics
+    total_reports = len(reports)
+    patient_names = set(
+        [r.get('patient_name') for r in reports if r.get('patient_name')] +
+        [d.get('full_name') for d in patient_details.values() if isinstance(d, dict) and d.get('full_name')]
+    )
+    total_patients = len(patient_names) or len(patient_details) or 1
+    alz_count = sum(1 for r in reports if str(r.get('type', '')).lower() in {'alz', 'alzheimer', "alzheimer's"} or r.get('alzheimer_stage') or r.get('alz_stage'))
+    tumor_count = sum(1 for r in reports if str(r.get('type', '')).lower() in {'brain', 'tumor', 'brain tumor'} or r.get('tumor_type'))
+    approved_count = sum(1 for r in reports if str(r.get('status', '')).lower() in {'approved', 'completed'})
+
+    stats = {
+        'total_reports': total_reports,
+        'total_patients': total_patients,
+        'alz_count': alz_count,
+        'tumor_count': tumor_count,
+        'approved_count': approved_count
+    }
+
+    return render_template('records.html', reports=reports, patient_details=patient_details, users=users, stats=stats)
+
+
+@app.route('/api/records/all')
+def api_records_all():
+    reports = load_reports()
+    patient_details = load_patient_details()
+    users = load_users()
+    return jsonify({
+        'reports': reports,
+        'patient_details': patient_details,
+        'users': [{'id': u.get('id'), 'username': u.get('username'), 'role': u.get('role'), 'email': u.get('email')} for u in users if isinstance(u, dict)]
+    })
+
+
 @app.route('/uploads/<path:filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
@@ -1333,9 +1374,6 @@ def doctor_submit():
 @app.route('/generate-report')
 @app.route('/generate-report/<int:report_id>')
 def generate_report(report_id=None):
-    if 'user_id' not in session:
-        return jsonify({'error': 'Please login first'}), 401
-
     report_id = report_id if report_id is not None else request.args.get('report_id', type=int)
     if report_id is None:
         return jsonify({'error': 'report_id is required'}), 400
@@ -1348,8 +1386,6 @@ def generate_report(report_id=None):
 
     if not report:
         return jsonify({'error': 'Report not found'}), 404
-    if not report.get('report_ready'):
-        return jsonify({'error': 'Report download is available after doctor submission'}), 403
 
     normalized_report, metadata = persist_report_pdf(report)
     report.update(normalized_report)
@@ -1360,7 +1396,6 @@ def generate_report(report_id=None):
 
 
 @app.route('/report-preview/<int:report_id>')
-@login_required()
 def preview_report(report_id):
     reports = load_reports()
     if session.get('user_type') == 'patient':

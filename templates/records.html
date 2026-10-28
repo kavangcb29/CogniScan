@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CogniScan | Clinical Records & Diagnostic Archive</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-base: #090d16;
+            --bg-surface: #0f172a;
+            --bg-card: rgba(17, 24, 39, 0.85);
+            --bg-card-hover: rgba(30, 41, 59, 0.95);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-focus: rgba(14, 165, 233, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --cyan-accent: #0ea5e9;
+            --teal-accent: #14b8a6;
+            --amber-accent: #f59e0b;
+            --danger-accent: #ef4444;
+            --success-accent: #10b981;
+            --glow-cyan: rgba(14, 165, 233, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Ambient Background Mesh */
+        .ambient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.09), transparent 45%),
+                radial-gradient(circle at 85% 20%, rgba(245, 158, 11, 0.08), transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(20, 184, 166, 0.07), transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navbar */
+        .glass-nav {
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.85rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .brand-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--cyan-accent), #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.15rem;
+            box-shadow: 0 0 15px var(--glow-cyan);
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.35rem 1.25rem;
+            transition: all 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.16);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+        }
+
+        /* Nav Tabs */
+        .nav-pills-custom .nav-link {
+            color: var(--text-muted);
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-pills-custom .nav-link:hover {
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .nav-pills-custom .nav-link.active {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #ffffff;
+            border-color: #38bdf8;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.35);
+        }
+
+        /* Search & Filter Bar */
+        .filter-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            color: var(--text-main);
+            padding: 0.6rem 1rem 0.6rem 2.6rem;
+            width: 100%;
+        }
+
+        .search-input-box:focus {
+            outline: none;
+            border-color: var(--cyan-accent);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+            background: rgba(15, 23, 42, 0.95);
+            color: var(--text-main);
+        }
+
+        /* Record Cards & Tables */
+        .record-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.25rem;
+            transition: all 0.25s ease;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .record-card:hover {
+            border-color: rgba(14, 165, 233, 0.35);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+        }
+
+        .record-thumbnail {
+            width: 90px;
+            height: 90px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--border-subtle);
+            background: #000;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .record-thumbnail:hover {
+            transform: scale(1.05);
+            border-color: var(--cyan-accent);
+        }
+
+        .badge-type-alz {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .badge-type-brain {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .badge-status-approved {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .badge-status-pending {
+            background: rgba(234, 179, 8, 0.15);
+            color: #fde047;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .badge-confidence {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #38bdf8;
+            background: rgba(14, 165, 233, 0.1);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        /* Buttons */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-primary {
+            background: rgba(14, 165, 233, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-action-primary:hover {
+            background: #0ea5e9;
+            color: white;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-action-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-action-success:hover {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-action-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-action-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-main);
+        }
+
+        /* Modal Customization */
+        .modal-content-custom {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 18px;
+            color: var(--text-main);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-header-custom {
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1.25rem 1.5rem;
+        }
+
+        .modal-footer-custom {
+            border-top: 1px solid var(--border-subtle);
+            padding: 1rem 1.5rem;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .gallery-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--cyan-accent);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #000;
+            display: block;
+        }
+
+        .gallery-item-body {
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-mesh"></div>
+
+    <div class="content-wrapper">
+        <!-- Navigation Header -->
+        <nav class="glass-nav">
+            <div class="container-xl d-flex justify-content-between align-items-center">
+                <a class="brand-logo" href="/">
+                    <div class="brand-icon-box">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <span>Cogni<span style="color: var(--cyan-accent);">Scan</span></span>
+                    <span class="badge text-bg-warning text-dark ms-2 fw-bold" style="font-size: 0.68rem; letter-spacing: 0.04em;">CLINICAL ARCHIVE</span>
+                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="/" class="btn-action btn-action-secondary">
+                        <i class="fas fa-home"></i><span class="d-none d-md-inline">Home</span>
+                    </a>
+                    <a href="/patient" class="btn-action btn-action-primary">
+                        <i class="fas fa-microscope"></i><span class="d-none d-md-inline">Patient Testing</span>
+                    </a>
+                    <a href="/doctor" class="btn-action btn-action-secondary">
+                        <i class="fas fa-user-doctor"></i><span class="d-none d-md-inline">Doctor Portal</span>
+                    </a>
+                    <button type="button" class="btn-action btn-action-success" onclick="exportRecordsCSV()">
+                        <i class="fas fa-file-csv"></i><span class="d-none d-md-inline">Export CSV</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Container -->
+        <main class="container-xl py-4">
+            
+            <!-- Page Title & Header -->
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1" style="letter-spacing: -0.02em;">
+                        <i class="fas fa-folder-open text-warning me-2"></i>Clinical Records &amp; Diagnostic Archive
+                    </h2>
+                    <p class="text-muted small mb-0">Central repository of all patient profiles, uploaded neuroimaging scans, multi-stage Alzheimer predictions, and verified PDF reports.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-info rounded-pill px-3" onclick="exportRecordsJSON()">
+                        <i class="fas fa-code me-1"></i> Raw JSON Database
+                    </button>
+                    <button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="window.location.reload()">
+                        <i class="fas fa-sync-alt me-1"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metric Summary Strip -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="stat-label">Total Reports</span>
+                            <i class="fas fa-file-medical text-info fa-lg"></i>
+                        </div>
+                        <div class="stat-value text-white mono">{{ stats.total_reports or 0 }}</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Verified historical records</small>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="stat-label">Alzheimer's Staging</span>
+                            <i class="fas fa-brain text-warning fa-lg"></i>
+                        </div>
+                        <div class="stat-value text-warning mono">{{ stats.alz_count or 0 }}</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Core research focus</small>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="stat-label">Auxiliary Tumors</span>
+                            <i class="fas fa-wave-square text-primary fa-lg"></i>
+                        </div>
+                        <div class="stat-value text-primary mono">{{ stats.tumor_count or 0 }}</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Secondary screener cases</small>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="stat-label">Patient Cohorts</span>
+                            <i class="fas fa-users text-success fa-lg"></i>
+                        </div>
+                        <div class="stat-value text-success mono">{{ stats.total_patients or 1 }}</div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Active patient profiles</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-pills nav-pills-custom mb-3" id="recordsTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tab-reports-btn" data-bs-toggle="pill" data-bs-target="#tab-reports" type="button" role="tab">
+                        <i class="fas fa-table-list me-2"></i>All Diagnostic Reports ({{ reports|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-patients-btn" data-bs-toggle="pill" data-bs-target="#tab-patients" type="button" role="tab">
+                        <i class="fas fa-address-book me-2"></i>Patient Directory ({{ patient_details|length }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-gallery-btn" data-bs-toggle="pill" data-bs-target="#tab-gallery" type="button" role="tab">
+                        <i class="fas fa-images me-2"></i>MRI Uploads Gallery
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-pdf-btn" data-bs-toggle="pill" data-bs-target="#tab-pdf" type="button" role="tab">
+                        <i class="fas fa-file-pdf me-2"></i>Generated PDF Vault
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Contents -->
+            <div class="tab-content" id="recordsTabContent">
+                
+                <!-- TAB 1: ALL DIAGNOSTIC REPORTS -->
+                <div class="tab-pane fade show active" id="tab-reports" role="tabpanel">
+                    
+                    <!-- Search & Filter Controls -->
+                    <div class="filter-panel">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-5 position-relative">
+                                <i class="fas fa-search position-absolute top-50 translate-middle-y text-muted" style="left: 1rem;"></i>
+                                <input type="text" id="recordSearchInput" class="search-input-box" placeholder="Search by patient name, report ID, diagnosis..." onkeyup="filterReports()">
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select id="filterTypeSelect" class="form-select bg-dark text-light border-secondary" onchange="filterReports()">
+                                    <option value="all">All Diagnostic Targets</option>
+                                    <option value="alz">🔬 Alzheimer's Staging</option>
+                                    <option value="brain">🧠 Brain Tumor Screener</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <select id="filterStatusSelect" class="form-select bg-dark text-light border-secondary" onchange="filterReports()">
+                                    <option value="all">All Statuses</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="pending">Pending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 text-md-end text-muted small mono" id="recordCountDisplay">
+                                Showing {{ reports|length }} records
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Records List -->
+                    <div id="recordsContainer">
+                        {% if reports %}
+                            {% for r in reports %}
+                                {% set is_alz = (r.type == 'alz' or r.alzheimer_stage or 'alz' in (r.type|lower)) %}
+                                {% set is_approved = (r.status == 'approved' or r.status == 'completed') %}
+                                {% set img_src = r.input_image or r.image or r.original_image or '' %}
+                                {% set img_display = ('data:image/png;base64,' ~ img_src) if (img_src and not img_src.startswith('http') and not img_src.startswith('/') and not img_src.startswith('data:')) else (img_src if img_src else '/static/images/placeholder_scan.png') %}
+
+                                <div class="record-card report-item-row" 
+                                     data-id="{{ r.id }}"
+                                     data-patient="{{ r.patient_name or 'Anonymous Patient' }}"
+                                     data-type="{{ 'alz' if is_alz else 'brain' }}"
+                                     data-result="{{ r.result or r.tumor_type or r.alzheimer_stage or 'Analysis Complete' }}"
+                                     data-status="{{ 'approved' if is_approved else 'pending' }}">
+                                    
+                                    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                                        
+                                        <!-- Left: Image & Demographics -->
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img src="{{ img_display }}" alt="Scan thumbnail" class="record-thumbnail" 
+                                                 onclick="openImageModal('{{ img_display }}', '{{ r.patient_name or 'Patient' }} - Scan #{{ r.id }}')">
+                                            <div>
+                                                <div class="d-flex align-items-center gap-2 mb-1">
+                                                    <span class="mono fw-bold text-white" style="font-size: 1.05rem;">
+                                                        #{{ r.id }} &bull; {{ r.patient_name or 'Patient Record' }}
+                                                    </span>
+                                                    <span class="{{ 'badge-type-alz' if is_alz else 'badge-type-brain' }}">
+                                                        {{ "🔬 Alzheimer's" if is_alz else "🧠 Brain Tumor" }}
+                                                    </span>
+                                                    <span class="{{ 'badge-status-approved' if is_approved else 'badge-status-pending' }}">
+                                                        {{ "Approved" if is_approved else "Pending Review" }}
+                                                    </span>
+                                                </div>
+                                                <div class="text-muted small mb-1">
+                                                    <span><i class="fas fa-user text-secondary me-1"></i>Age: {{ r.patient_age or 'N/A' }}</span>
+                                                    <span class="ms-2"><i class="fas fa-venus-mars text-secondary me-1"></i>Gender: {{ r.patient_gender or 'N/A' }}</span>
+                                                    <span class="ms-2 mono"><i class="fas fa-calendar-alt text-secondary me-1"></i>{{ r.date[:16] if r.date else 'Recorded' }}</span>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <strong class="text-white small">Diagnosis:</strong>
+                                                    <span class="fw-bold {{ 'text-warning' if is_alz else 'text-info' }}">
+                                                        {{ r.result or r.tumor_type or r.alzheimer_stage or 'Analysis Completed' }}
+                                                    </span>
+                                                    {% if r.confidence or r.ai_confidence %}
+                                                        <span class="badge-confidence">
+                                                            <i class="fas fa-circle-check text-info me-1"></i>{{ r.confidence or r.ai_confidence }}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right: Actions -->
+                                        <div class="d-flex flex-wrap align-items-center gap-2 justify-content-md-end">
+                                            <a href="/report-preview/{{ r.id }}" class="btn-action btn-action-primary" target="_blank" title="View formatted clinical report">
+                                                <i class="fas fa-eye"></i> View Report
+                                            </a>
+                                            <a href="/generate-report/{{ r.id }}" class="btn-action btn-action-success" title="Download official PDF report">
+                                                <i class="fas fa-download"></i> PDF
+                                            </a>
+                                            <button type="button" class="btn-action btn-action-secondary" 
+                                                    onclick="inspectReportModal({{ r.id }})" title="Inspect complete metadata">
+                                                <i class="fas fa-circle-info"></i> Details
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {% if r.doctor_notes or r.symptoms %}
+                                        <div class="mt-2 pt-2 border-top border-secondary-subtle d-flex flex-wrap gap-3 small text-muted">
+                                            {% if r.symptoms %}
+                                                <div><i class="fas fa-notes-medical text-secondary me-1"></i><strong>Symptoms:</strong> {{ r.symptoms }}</div>
+                                            {% endif %}
+                                            {% if r.doctor_notes %}
+                                                <div><i class="fas fa-user-doctor text-secondary me-1"></i><strong>Doctor Notes:</strong> {{ r.doctor_notes }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="p-5 text-center stat-card">
+                                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                                <h5>No Diagnostic Records Found</h5>
+                                <p class="text-muted small">Perform a new scan upload in the Patient Portal to generate your first automated report.</p>
+                                <a href="/patient" class="btn btn-primary btn-sm rounded-pill px-4">Open Patient Portal</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- TAB 2: PATIENT DIRECTORY -->
+                <div class="tab-pane fade" id="tab-patients" role="tabpanel">
+                    <div class="row g-3">
+                        {% if patient_details %}
+                            {% for pid, p in patient_details.items() %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="stat-card h-100">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="rounded-circle bg-primary-subtle text-primary p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                                                    <i class="fas fa-user fa-lg"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-white">{{ p.full_name or 'Patient #' ~ pid }}</h6>
+                                                    <small class="text-muted mono">ID: PT-{{ pid }}</small>
+                                                </div>
+                                            </div>
+                                            <span class="badge bg-secondary-subtle text-light border border-secondary">{{ p.gender or 'N/A' }} &bull; {{ p.age or 'N/A' }} yrs</span>
+                                        </div>
+                                        <div class="small text-muted mb-3">
+                                            <div class="mb-1"><i class="fas fa-phone text-secondary me-2"></i>{{ p.phone or 'No phone registered' }}</div>
+                                            <div class="mb-1"><i class="fas fa-location-dot text-secondary me-2"></i>{{ p.address or 'Address not provided' }}</div>
+                                            <div><i class="fas fa-notes-medical text-secondary me-2"></i>{{ p.medical_history or 'No pre-existing conditions recorded' }}</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary-subtle">
+                                            <span class="small text-info mono"><i class="fas fa-file-medical me-1"></i>{{ p.reports|length if p.reports else 0 }} Associated Scans</span>
+                                            <button class="btn btn-sm btn-outline-info rounded-pill py-0 px-2" onclick="filterByPatient('{{ p.full_name }}')">
+                                                View Scans
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-12 text-center p-5 stat-card">
+                                <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                                <h5>No Registered Patients</h5>
+                                <p class="text-muted small">Register patients through the patient portal to create structured cohorts.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- TAB 3: UPLOADED SCANS GALLERY -->
+                <div class="tab-pane fade" id="tab-gallery" role="tabpanel">
+                    <div class="gallery-grid">
+                        {% for r in reports %}
+                            {% set img_src = r.input_image or r.image or r.original_image or '' %}
+                            {% set img_display = ('data:image/png;base64,' ~ img_src) if (img_src and not img_src.startswith('http') and not img_src.startswith('/') and not img_src.startswith('data:')) else (img_src if img_src else '/static/images/placeholder_scan.png') %}
+                            
+                            <div class="gallery-item">
+                                <img src="{{ img_display }}" alt="MRI Scan" onclick="openImageModal('{{ img_display }}', '{{ r.patient_name or 'Patient' }} - Scan #{{ r.id }}')">
+                                <div class="gallery-item-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong class="text-white small">Scan #{{ r.id }}</strong>
+                                        <span class="badge-confidence">{{ r.confidence or '95%' }}</span>
+                                    </div>
+                                    <div class="text-muted small mb-2">{{ r.patient_name or 'Patient' }} &bull; {{ r.patient_age or 'N/A' }}y</div>
+                                    <div class="small fw-semibold text-warning mb-2">{{ r.result or r.tumor_type or r.alzheimer_stage or 'Scan' }}</div>
+                                    <div class="d-flex gap-1">
+                                        <a href="/report-preview/{{ r.id }}" class="btn-action btn-action-primary w-100 justify-content-center py-1">Report</a>
+                                        <a href="/generate-report/{{ r.id }}" class="btn-action btn-action-success w-100 justify-content-center py-1">PDF</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- TAB 4: GENERATED PDF VAULT -->
+                <div class="tab-pane fade" id="tab-pdf" role="tabpanel">
+                    <div class="stat-card">
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0" style="background: transparent;">
+                                <thead>
+                                    <tr class="text-secondary small mono">
+                                        <th>REPORT ID</th>
+                                        <th>PATIENT NAME</th>
+                                        <th>TARGET MODULE</th>
+                                        <th>CLINICAL VERDICT</th>
+                                        <th>TIMESTAMP</th>
+                                        <th>STATUS</th>
+                                        <th class="text-end">DOWNLOAD</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for r in reports %}
+                                        <tr>
+                                            <td class="mono fw-bold text-info">#{{ r.id }}</td>
+                                            <td class="fw-semibold text-white">{{ r.patient_name or 'Anonymous' }}</td>
+                                            <td>
+                                                <span class="{{ 'badge-type-alz' if (r.type == 'alz' or r.alzheimer_stage) else 'badge-type-brain' }}">
+                                                    {{ "Alzheimer's" if (r.type == 'alz' or r.alzheimer_stage) else "Brain Tumor" }}
+                                                </span>
+                                            </td>
+                                            <td class="text-warning fw-semibold">{{ r.result or r.tumor_type or r.alzheimer_stage }}</td>
+                                            <td class="mono small text-muted">{{ r.date[:16] if r.date else 'Recent' }}</td>
+                                            <td>
+                                                <span class="badge bg-success-subtle text-success border border-success">Verified</span>
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="/generate-report/{{ r.id }}" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1">
+                                                    <i class="fas fa-file-arrow-down me-1"></i> Download PDF
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Image Modal Viewer -->
+    <div class="modal fade" id="imageViewerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title" id="imageModalTitle"><i class="fas fa-image text-info me-2"></i>Neuroimaging Scan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <img id="modalPreviewImg" src="" alt="Full Resolution MRI" style="max-height: 520px; max-width: 100%; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+                </div>
+                <div class="modal-footer modal-footer-custom justify-content-between">
+                    <span class="mono text-muted small">CogniScan High-Resolution Neuroimaging Viewer</span>
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-custom">
+                    <h5 class="modal-title" id="detailsModalTitle"><i class="fas fa-microscope text-warning me-2"></i>Diagnostic Case Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="detailsModalBody">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <div class="modal-footer modal-footer-custom justify-content-between">
+                    <a id="detailsPreviewBtn" href="#" class="btn btn-outline-info btn-sm rounded-pill px-3" target="_blank">
+                        <i class="fas fa-eye me-1"></i> Full Clinical View
+                    </a>
+                    <a id="detailsPdfBtn" href="#" class="btn btn-success btn-sm rounded-pill px-3">
+                        <i class="fas fa-file-pdf me-1"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // All Reports Data Cache
+        const ALL_REPORTS = {{ reports|tojson }};
+        const ALL_PATIENTS = {{ patient_details|tojson }};
+
+        // Real-Time Filter
+        function filterReports() {
+            const query = document.getElementById('recordSearchInput').value.toLowerCase().trim();
+            const typeFilter = document.getElementById('filterTypeSelect').value;
+            const statusFilter = document.getElementById('filterStatusSelect').value;
+
+            const items = document.querySelectorAll('.report-item-row');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const id = item.getAttribute('data-id');
+                const patient = item.getAttribute('data-patient').toLowerCase();
+                const type = item.getAttribute('data-type');
+                const result = item.getAttribute('data-result').toLowerCase();
+                const status = item.getAttribute('data-status');
+
+                const matchesQuery = !query || patient.includes(query) || id.includes(query) || result.includes(query);
+                const matchesType = typeFilter === 'all' || type === typeFilter;
+                const matchesStatus = statusFilter === 'all' || status === statusFilter;
+
+                if (matchesQuery && matchesType && matchesStatus) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            document.getElementById('recordCountDisplay').textContent = `Showing ${visibleCount} of ${items.length} records`;
+        }
+
+        // Filter by Patient from Directory Tab
+        function filterByPatient(patientName) {
+            document.getElementById('tab-reports-btn').click();
+            document.getElementById('recordSearchInput').value = patientName;
+            filterReports();
+        }
+
+        // Open Image Viewer Modal
+        function openImageModal(imgSrc, title) {
+            document.getElementById('modalPreviewImg').src = imgSrc;
+            document.getElementById('imageModalTitle').innerHTML = `<i class="fas fa-image text-info me-2"></i>${title}`;
+            const modal = new bootstrap.Modal(document.getElementById('imageViewerModal'));
+            modal.show();
+        }
+
+        // Inspect Report Details Modal
+        function inspectReportModal(reportId) {
+            const r = ALL_REPORTS.find(item => item.id === reportId);
+            if (!r) return;
+
+            document.getElementById('detailsModalTitle').innerHTML = `<i class="fas fa-microscope text-warning me-2"></i>Case #${r.id} &bull; ${r.patient_name || 'Patient'}`;
+            document.getElementById('detailsPreviewBtn').href = `/report-preview/${r.id}`;
+            document.getElementById('detailsPdfBtn').href = `/generate-report/${r.id}`;
+
+            const isAlz = r.type === 'alz' || r.alzheimer_stage;
+            const body = document.getElementById('detailsModalBody');
+            
+            body.innerHTML = `
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle);">
+                            <div class="small text-muted text-uppercase mono mb-1">Patient Details</div>
+                            <h5 class="text-white fw-bold mb-1">${escapeHtml(r.patient_name || 'N/A')}</h5>
+                            <div class="small text-muted">Age: ${escapeHtml(r.patient_age || 'N/A')} | Gender: ${escapeHtml(r.patient_gender || 'N/A')}</div>
+                            <div class="small text-muted mono mt-1">Date: ${escapeHtml(r.date || 'N/A')}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle);">
+                            <div class="small text-muted text-uppercase mono mb-1">Diagnostic Classification</div>
+                            <h5 class="${isAlz ? 'text-warning' : 'text-info'} fw-bold mb-1">${escapeHtml(r.result || r.tumor_type || r.alzheimer_stage || 'Completed')}</h5>
+                            <div class="small text-muted">Target: ${isAlz ? "Alzheimer's (EfficientNetB0)" : "Brain Tumor (CNN)"}</div>
+                            <div class="small text-muted mono mt-1">Confidence: <span class="badge-confidence">${escapeHtml(r.confidence || r.ai_confidence || '95%')}</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                ${r.symptoms ? `
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase mono">Clinical Symptoms Reported:</label>
+                        <div class="p-2 rounded bg-dark border border-secondary text-light small">${escapeHtml(r.symptoms)}</div>
+                    </div>
+                ` : ''}
+
+                ${r.doctor_notes ? `
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase mono">Attending Physician Notes:</label>
+                        <div class="p-2 rounded bg-dark border border-secondary text-light small">${escapeHtml(r.doctor_notes)}</div>
+                    </div>
+                ` : ''}
+
+                ${r.prescription ? `
+                    <div class="mb-3">
+                        <label class="small text-muted text-uppercase mono">Prescription & Next Steps:</label>
+                        <div class="p-2 rounded bg-dark border border-secondary text-light small">${escapeHtml(r.prescription)}</div>
+                    </div>
+                ` : ''}
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+            modal.show();
+        }
+
+        // Export All Records to CSV
+        function exportRecordsCSV() {
+            if (!ALL_REPORTS || ALL_REPORTS.length === 0) {
+                alert('No records available to export.');
+                return;
+            }
+
+            const headers = ['Report_ID', 'Patient_Name', 'Patient_Age', 'Patient_Gender', 'Detection_Type', 'Diagnosis_Verdict', 'Confidence', 'Date', 'Status', 'Symptoms', 'Doctor_Notes'];
+            const rows = ALL_REPORTS.map(r => [
+                r.id || '',
+                `"${(r.patient_name || '').replace(/"/g, '""')}"`,
+                r.patient_age || '',
+                r.patient_gender || '',
+                r.type || '',
+                `"${(r.result || r.tumor_type || r.alzheimer_stage || '').replace(/"/g, '""')}"`,
+                r.confidence || r.ai_confidence || '',
+                r.date || '',
+                r.status || '',
+                `"${(r.symptoms || '').replace(/"/g, '""')}"`,
+                `"${(r.doctor_notes || '').replace(/"/g, '""')}"`
+            ]);
+
+            const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `CogniScan_Clinical_Records_${new Date().toISOString().slice(0, 10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Export All Records to JSON
+        function exportRecordsJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ reports: ALL_REPORTS, patients: ALL_PATIENTS }, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `CogniScan_Database_${new Date().toISOString().slice(0, 10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

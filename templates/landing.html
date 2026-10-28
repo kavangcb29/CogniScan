@@ -264,7 +264,7 @@
         /* Portal Cards */
         .portal-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.75rem;
             margin-bottom: 4.5rem;
         }
@@ -545,6 +545,9 @@
                     <a href="#workflow">Workflow</a>
                     <a href="/patient" class="text-info"><i class="fas fa-arrow-up-right-from-square me-1"></i>Patient Portal</a>
                     <a href="/doctor" class="text-white"><i class="fas fa-user-doctor me-1"></i>Doctor Portal</a>
+                    <a href="/records" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1 ms-3" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24; background: rgba(245, 158, 11, 0.1);">
+                        <i class="fas fa-folder-open me-1"></i>All Records
+                    </a>
                 </div>
             </div>
         </nav>
@@ -566,6 +569,10 @@
                     <a href="/doctor" class="btn-modern-secondary">
                         <i class="fas fa-stethoscope"></i>
                         <span>Clinical Doctor Portal</span>
+                    </a>
+                    <a href="/records" class="btn-modern-secondary" style="border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; background: rgba(245, 158, 11, 0.08);">
+                        <i class="fas fa-folder-open text-warning"></i>
+                        <span>All Records &amp; Uploads</span>
                     </a>
                 </div>
 
@@ -623,6 +630,22 @@
                         <span class="portal-tag"><i class="fas fa-users me-1 text-primary"></i>Patient Cohort</span>
                         <span class="portal-tag"><i class="fas fa-check-double me-1 text-info"></i>Expert Review</span>
                         <span class="portal-tag"><i class="fas fa-microscope me-1 text-warning"></i>Multimodal</span>
+                    </div>
+                </a>
+
+                <!-- Clinical Records Vault Card -->
+                <a href="/records" class="portal-card" style="border-color: rgba(245, 158, 11, 0.3);">
+                    <div>
+                        <div class="portal-icon" style="color: #fbbf24; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.25);">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <h3>Records &amp; Vault</h3>
+                        <p>Direct access to all registered patient cohorts, historical MRI scan uploads, diagnostic classification results, and downloadable clinical PDF reports.</p>
+                    </div>
+                    <div class="portal-tags">
+                        <span class="portal-tag"><i class="fas fa-database me-1 text-warning"></i>All Uploads</span>
+                        <span class="portal-tag"><i class="fas fa-address-book me-1 text-info"></i>Patients</span>
+                        <span class="portal-tag"><i class="fas fa-file-pdf me-1 text-danger"></i>PDF Vault</span>
                     </div>
                 </a>
             </div>
