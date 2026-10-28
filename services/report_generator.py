@@ -311,7 +311,7 @@ def build_medical_report_pdf(report: dict) -> io.BytesIO:
 
     header = Table(
         [[
-            Table([[Paragraph("NeuroDetect AI - Neurodiagnostic Report", styles["body_bold"]), Paragraph("AI-powered Brain Analysis System", styles["small"])]], colWidths=[2.2 * inch]),
+            Table([[Paragraph("CogniScan - Neurodiagnostic Report", styles["body_bold"]), Paragraph("AI-powered Cognitive & Brain Analysis System", styles["small"])]], colWidths=[2.2 * inch]),
             Paragraph("Clinical Diagnostic Summary", styles["title"]),
             Table([[Paragraph("Report ID", styles["small_right"]), Paragraph(_safe_text(report.get("id")), styles["value_right"])], [Paragraph("Date", styles["small_right"]), Paragraph(report_date or "N/A", styles["value_right"])]], colWidths=[0.8 * inch, 1.3 * inch]),
         ]],

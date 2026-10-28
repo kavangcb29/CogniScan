@@ -4,6 +4,7 @@ Updated views using the new multi-class CNN model
 """
 
 import os
+import tempfile
 import logging
 import numpy as np
 from django.shortcuts import render, redirect
@@ -96,9 +97,6 @@ def brain_tumor_classification_v2(request):
                 return redirect('/brain/')
             
             # Save image temporarily for processing
-            import tempfile
-            import os
-            
             with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as temp_file:
                 for chunk in image_file.chunks():
                     temp_file.write(chunk)

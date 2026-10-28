@@ -224,15 +224,18 @@ class TumorGradingModel:
             return None
 
         try:
+            expected_h, expected_w = 224, 224
+            model_input_shape = getattr(self.model, "input_shape", None)
+            if model_input_shape and len(model_input_shape) >= 3:
+                expected_h = int(model_input_shape[1]) or 224
+                expected_w = int(model_input_shape[2]) or 224
+
             if prepared_image is None:
-                # Determine target size from the model's own input shape
-                model_input_shape = self.model.input_shape  # e.g. (None, 150, 150, 3)
-                if model_input_shape and len(model_input_shape) >= 3:
-                    h, w = int(model_input_shape[1]), int(model_input_shape[2])
-                    target_size = (h, w)
-                else:
-                    target_size = (150, 150)
-                prepared_image = preprocess_classifier_image_rgb(image, target_size=target_size)
+                prepared_image = preprocess_classifier_image_rgb(image, target_size=(expected_h, expected_w))
+            elif prepared_image.shape[1:3] != (expected_h, expected_w):
+                # Ensure dimension matches model expectations
+                prepared_image = preprocess_classifier_image_rgb(image, target_size=(expected_h, expected_w))
+
             prediction = self.model.predict(prepared_image, verbose=0)
             scores = np.asarray(prediction).squeeze()
             if scores.ndim != 1 or scores.shape[0] < len(self.class_names):

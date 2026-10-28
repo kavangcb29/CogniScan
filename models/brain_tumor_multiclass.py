@@ -39,9 +39,10 @@ GRADE_MAPPING = {
 
 # Get model paths
 REPO_ROOT = Path(__file__).parent.parent
-TRAINED_MODELS_DIR = REPO_ROOT / "trained_models"
-MODEL_PATH = TRAINED_MODELS_DIR / "brain_tumor_cnn_multiclass_improved.h5"
-METADATA_PATH = TRAINED_MODELS_DIR / "tumor_model_multiclass_improved_metadata.json"
+MODEL_PATH = REPO_ROOT / "brain_model_new.h5"
+if not MODEL_PATH.exists():
+    MODEL_PATH = REPO_ROOT / "trained_models" / "brain_tumor_cnn_multiclass_improved.h5"
+METADATA_PATH = REPO_ROOT / "models" / "model_accuracy.json"
 
 
 class BrainTumorMulticlassClassifier:

@@ -305,7 +305,7 @@ def build_report_context(report: dict) -> Dict[str, object]:
     bbox_height_mm = _safe_float(bounding_box.get("height_mm"), 0.0)
 
     return {
-        "system_name": "NeuroDetect AI",
+        "system_name": "CogniScan",
         "system_subtitle": "AI-assisted neuroimaging decision support",
         "report_title": "Clinical Imaging Report",
         "report_id": _safe_text(report.get("id")),

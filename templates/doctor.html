@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Portal - NeuroDetect AI</title>
+    <title>Doctor Portal - CogniScan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -855,7 +855,7 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-brain me-2"></i>NeuroDetect AI
+                <i class="fas fa-brain me-2 text-info"></i>CogniScan
             </a>
             <div class="ms-auto">
                 <button class="btn btn-outline-light me-2" id="themeToggle" onclick="toggleTheme()">
@@ -1444,14 +1444,14 @@
                             <div class="info-card">
                                 <h6><i class="fas fa-robot me-2"></i>AI Analysis Results</h6>
                                 <p><strong>Patient:</strong> ${escapeHtml(report.patient_name || 'Unknown')}</p>
-                                <p><strong>Type:</strong> ${escapeHtml(report.type === 'brain' ? 'Brain Tumor' : "Alzheimer's")}</p>
+                                <p><strong>Type:</strong> ${escapeHtml(report.type === 'alz' || report.type === 'alzheimer' ? "Alzheimer's (Primary Focus)" : "Brain Tumor (Auxiliary)")}</p>
                                 <p><strong>AI Result:</strong> ${escapeHtml(report.result || 'Unavailable')}</p>
+                                <p><strong>Alzheimer Stage:</strong> ${escapeHtml(report.analysis?.alzheimers?.stage || report.alzheimer_stage || report.alz_stage || 'N/A')}</p>
+                                <p><strong>Alzheimer Confidence:</strong> ${renderConfidenceBadge(report.analysis?.alzheimers?.confidence ?? report.alzheimer_confidence)}</p>
+                                <p><strong>Model Accuracy:</strong> ${renderConfidenceBadge(modelAccuracy)}</p>
                                 <p><strong>Tumor Type:</strong> ${escapeHtml(tumorDetails.type || 'N/A')}</p>
                                 <p><strong>Tumor Stage:</strong> ${escapeHtml(tumorDetails.stage || 'N/A')}</p>
                                 <p><strong>Tumor Confidence:</strong> ${renderConfidenceBadge(tumorDetails.confidence ?? report.tumor_confidence)}</p>
-                                <p><strong>Alzheimer Stage:</strong> ${escapeHtml(report.analysis?.alzheimers?.stage || report.alzheimer_stage || report.alz_stage || 'N/A')}</p>
-                                <p><strong>Model Accuracy:</strong> ${renderConfidenceBadge(modelAccuracy)}</p>
-                                <p><strong>Alzheimer Confidence:</strong> ${renderConfidenceBadge(report.analysis?.alzheimers?.confidence ?? report.alzheimer_confidence)}</p>
                                 <p><strong>Date:</strong> ${escapeHtml(new Date(report.date).toLocaleString())}</p>
                                 ${report.patient_age ? `<p><strong>Age:</strong> ${escapeHtml(report.patient_age)}</p>` : ''}
                                 ${report.patient_gender ? `<p><strong>Gender:</strong> ${escapeHtml(report.patient_gender)}</p>` : ''}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroDetect AI - Neurodiagnostic Report</title>
+    <title>CogniScan - Cognitive & Neurodiagnostic Report</title>
     <style>
         @page { size:A4; margin:14mm; }
         :root{--blue:#0b6e99;--blue-dark:#084f6f;--gray:#6f7f8c;--border:#d5e1e8;--soft:#f7fbfd;--soft-blue:#ebf6fb;--text:#263744;--shadow:0 10px 24px rgba(11,110,153,.08);}
@@ -54,7 +54,7 @@
     {% set download_url = report_data.report_download_url or (url_for('generate_report', report_id=report_id) if report_id else '#') %}
     <div class="page">
         <header class="header">
-            <div class="brand"><h1>NeuroDetect AI - Neurodiagnostic Report</h1><div class="subtitle">AI-powered Brain Analysis System</div></div>
+            <div class="brand"><h1>CogniScan - Neurodiagnostic Report</h1><div class="subtitle">AI-powered Cognitive & Brain Analysis System</div></div>
             <div class="title"><h2>Clinical Diagnostic Summary</h2></div>
             <div class="meta">
                 <div class="row"><span class="label">Report ID</span><span class="value">{{ report_id }}</span></div>

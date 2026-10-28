@@ -16,7 +16,7 @@ class ImageValidator:
     
     # Brain Tumor expected characteristics
     BRAIN_TUMOR_SPECS = {
-        "target_size": (150, 150),
+        "target_size": (224, 224),
         "color_mode": "RGB",
         "expected_channels": 3,
         "model_name": "Brain Tumor CNN (4-Class)",
@@ -56,7 +56,7 @@ class ImageValidator:
     @staticmethod
     def preprocess_brain_tumor_image(image_path: str) -> Optional[np.ndarray]:
         """
-        Preprocess image specifically for Brain Tumor model (150x150)
+        Preprocess image specifically for Brain Tumor model (224x224)
         
         Args:
             image_path: Path to brain MRI image

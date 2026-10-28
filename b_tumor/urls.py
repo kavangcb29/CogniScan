@@ -16,6 +16,7 @@ urlpatterns = [
     path('logout/',views.logout,name='logout'),
     path('View_Users/',views.View_Users,name='View_Users'),
     path('base/',views.base,name='base'),
+    path('about/',views.about,name='about'),
     path('api/classify/', brain_tumor_api_classify, name='api_classify'),
     path('brain-info/', brain_tumor_info, name='brain_info'),
 

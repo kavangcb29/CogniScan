@@ -1,16 +1,16 @@
-# NeuroDetect AI
+# CogniScan
 
-NeuroDetect AI is a Flask-based medical imaging platform for brain tumor and Alzheimer-related screening workflows. It includes patient and doctor dashboards, scan upload and analysis flows, report management, appointment scheduling, and realtime chat.
+CogniScan is a comprehensive deep learning medical imaging platform engineered primarily for Alzheimer's Disease cognitive staging and early biomarker detection, with auxiliary screening for brain tumor detection. It includes patient and doctor dashboards, MRI scan upload and automated multi-stage classification, clinical report generation, appointment scheduling, and communication tools.
 
 ## Features
 
-- Brain tumor classification and staging
-- Alzheimer stage prediction
-- MRI enhancement and segmentation support
-- Patient and doctor web portals
-- Medical report generation
-- Appointment booking and calendar views
-- Realtime chat and status updates
+- **Primary Focus**: Alzheimer's Disease multi-stage cognitive classification (Non-Demented, Very Mild, Mild, Moderate) via EfficientNetB0
+- **Auxiliary Screener**: 4-class Brain Tumor classification via Deep CNN
+- MRI preprocessing, enhancement, and segmentation bounding-box visualization
+- Patient and Doctor clinical decision support portals
+- Standardized medical PDF & printable neurodiagnostic report generation
+- Appointment scheduling and consultation management
+- Fully integrated Django and Flask architectures
 
 ## Tech Stack
 

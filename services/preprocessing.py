@@ -18,12 +18,12 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _classifier_target_size() -> Tuple[int, int]:
-    """Read classifier input size from model manifest (defaults to 150x150)."""
+    """Read classifier input size from model manifest (defaults to 224x224)."""
     entry = get_model_manifest_entry("brain_classifier")
     input_shape = entry.get("input_shape")
     if isinstance(input_shape, (list, tuple)) and len(input_shape) >= 2:
         return (int(input_shape[0]), int(input_shape[1]))
-    return (150, 150)
+    return (224, 224)
 
 
 @dataclass(frozen=True)
