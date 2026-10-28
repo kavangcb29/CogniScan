@@ -784,7 +784,7 @@
     
     <script>
         // All Reports Data Cache
-        const ALL_REPORTS = {{ reports|tojson }};
+        const ALL_REPORTS = {{ (reports_meta or reports)|tojson }};
         const ALL_PATIENTS = {{ patient_details|tojson }};
 
         // Real-Time Filter

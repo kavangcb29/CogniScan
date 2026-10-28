@@ -1261,7 +1261,17 @@ def records_portal():
         'approved_count': approved_count
     }
 
-    return render_template('records.html', reports=reports, patient_details=patient_details, users=users, stats=stats)
+    # Lightweight metadata for client-side search, filtering, and details modal
+    reports_meta = []
+    for r in reports:
+        item = {}
+        for k, v in r.items():
+            if isinstance(v, str) and len(v) > 1000:
+                continue
+            item[k] = v
+        reports_meta.append(item)
+
+    return render_template('records.html', reports=reports, reports_meta=reports_meta, patient_details=patient_details, users=users, stats=stats)
 
 
 @app.route('/api/records/all')
